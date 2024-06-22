@@ -8,6 +8,7 @@ import {
 import App from "../App";
 import Login from "../pages/sign-in";
 import SignUpRegister from "../pages/sign-up";
+import Code from "../components/code";
 
 const Index = () => {
   const router = createBrowserRouter(
@@ -15,6 +16,7 @@ const Index = () => {
       <Route path="/" element={<App />}>
         <Route index element={<Login />} />
         <Route path="/sign-up" element={<SignUpRegister />} />
+        <Route path="/code" element={<Code />} />
       </Route>
     )
   );

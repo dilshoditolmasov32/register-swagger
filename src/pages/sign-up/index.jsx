@@ -9,13 +9,37 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
+import { auth } from "@service";
+import "rodal/lib/rodal.css";
+import { useNavigate } from "react-router-dom";
+
 const defaultTheme = createTheme();
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
-  const handleSubmit = (event) => {
+  const [code, setCode] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData);
+
+    try {
+      const res = await auth.sign_up(formData);
+      if (res.status === 200) {
+        localStorage.setItem("email", formData.email);
+        navigate("/code");
+        const payload = {
+          code: code,
+          email: localStorage.getItem("email"),
+        };
+
+        console.log(payload);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    event.target.reset();
   };
 
   const handleChange = (event) => {
@@ -46,26 +70,14 @@ export default function SignUp() {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
+                  id="fullName"
+                  label="Full Name"
+                  name="full_name"
+                  autoComplete="full_name"
                   onChange={handleChange}
                 />
               </Grid>
@@ -98,7 +110,7 @@ export default function SignUp() {
                   fullWidth
                   name="phone_number"
                   label="Phone Number"
-                  type="number"
+                  type="text"
                   id="phone_number"
                   autoComplete="new-password"
                   onChange={handleChange}
